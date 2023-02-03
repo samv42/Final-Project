@@ -21,6 +21,9 @@ public class ExpenseService implements ExpenseServiceInterface{
     }
 
     @Override
+    public List<Expense> getExpensesByUser(CustomUserDetails user) {return expenseRepo.getAllExpensesByUser(user);}
+
+    @Override
     public List <Expense> getExpensesByAccount(Account account){return expenseRepo.getAllExpensesByAccount(account);}
 
     @Override

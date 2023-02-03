@@ -1,6 +1,8 @@
 package com.project.lab.repo;
 
+import com.project.lab.CustomUserDetails;
 import com.project.lab.models.Account;
+import com.project.lab.models.Debt;
 import lombok.*;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -19,4 +21,5 @@ import java.util.function.Function;
 @Repository
 
 public interface AccountRepo extends JpaRepository<Account, Long> {
+    List<Account> getAllAccountsByUser(CustomUserDetails user);
 }

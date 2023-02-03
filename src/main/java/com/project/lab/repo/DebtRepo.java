@@ -1,5 +1,6 @@
 package com.project.lab.repo;
 
+import com.project.lab.CustomUserDetails;
 import com.project.lab.models.Account;
 import com.project.lab.models.Debt;
 import com.project.lab.models.Expense;
@@ -16,5 +17,6 @@ import java.util.List;
 @Repository
 public interface DebtRepo extends JpaRepository<Debt, Long> {
     List<Debt> getAllDebtsByAccount(Account account);
+    List<Debt> getAllDebtsByUser(CustomUserDetails user);
 
 }

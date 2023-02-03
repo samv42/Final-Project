@@ -38,4 +38,5 @@ public class Account {
     public String getUser() {
         return user.getUsername();
     }
+    public long getUserId() { return user.getId();}
 }

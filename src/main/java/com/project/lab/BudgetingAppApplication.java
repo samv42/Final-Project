@@ -32,15 +32,19 @@ public class BudgetingAppApplication {
 
 		return (args) -> {
 			if (budgetUserDetailsService.getAllUsers().isEmpty()) {
-				Role role = new Role(Role.Roles.ROLE_USER);
-				Role role2 = new Role(Role.Roles.ROLE_USER);
+				Role roleAdmin = new Role(Role.Roles.ROLE_ADMIN);
+				budgetUserDetailsService.createNewUser(
+						new CustomUserDetails("admin", "strongpass23!",
+								Collections.singletonList(roleAdmin))
+				);
+				Role roleUser = new Role(Role.Roles.ROLE_USER);
 				budgetUserDetailsService.createNewUser(
 						new CustomUserDetails("user", "password",
-								Collections.singletonList(role))
+								Collections.singletonList(roleUser))
 				);
 				budgetUserDetailsService.createNewUser(
 						new CustomUserDetails("user2", "password2",
-								Collections.singletonList(role))
+								Collections.singletonList(roleUser))
 				);
 			}
 			if(accountService.getAllAccounts().isEmpty()){

@@ -21,6 +21,9 @@ public class AccountService implements AccountServiceInterface {
     }
 
     @Override
+    public List<Account> getAccountsByUser(CustomUserDetails user) { return accountRepo.getAllAccountsByUser(user);}
+
+    @Override
     @Transactional
     public Account saveAccount(Account account) {
         CustomUserDetails user = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

@@ -9,24 +9,24 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @Entity
-    @Getter
-    @Setter
-    @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Table(name = "user")
-    public class CustomUserDetails implements UserDetails {
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "user")
+public class CustomUserDetails implements UserDetails {
 
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-        @Column(nullable = false, unique = true)
-        public String username;
+    @Column(nullable = false, unique = true)
+    public String username;
 
-        @Column(nullable = false)
-        @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-        private String password;
+    @Column(nullable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private String password;
 
     @Builder.Default
     @Column(nullable = false)
@@ -44,13 +44,22 @@ import java.util.Collection;
     @Column(nullable = false)
     private boolean isEnabled = true;
 
-        public CustomUserDetails(String username, String password, Collection<Role> authorities) {
-            this.username = username;
-            this.password = password;
-            this.authorities = authorities;
-        }
+    public CustomUserDetails(String username, String password, Collection<Role> authorities) {
+        this.username = username;
+        this.password = password;
+        this.authorities = authorities;
+    }
 
-        @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-        @JoinColumn(name = "userId", nullable = false)
-        private Collection<Role> authorities = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "userId", nullable = false)
+    private Collection<Role> authorities = new ArrayList<>();
+
+    public boolean checkAuthority(String role) {
+        for (Role role1 : authorities) {
+            if (role1.getAuthority().equals(role)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

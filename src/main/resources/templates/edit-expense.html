@@ -10,10 +10,6 @@
       method="post">
     <table border="0" cellpadding="10">
         <tr>
-            <td>Expense ID:</td>
-            <td><input type="text" th:field="*{id}" readonly/></td>
-        </tr>
-        <tr>
             <td>Expense Name:</td>
             <td><input type="text" th:field="*{name}" required/></td>
         </tr>
@@ -28,7 +24,7 @@
         </tr>
         <tr>
             <td>Recur Monthly:</td>
-            <td><input type="bolean" th:field="*{recurring}" required/></td>
+            <td><input type="boolean" th:field="*{recurring}" required/></td>
         </tr>
         <tr>
             <td>Amount:</td>

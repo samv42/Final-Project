@@ -29,6 +29,9 @@ public class DebtService implements DebtServiceInterface{
     }
 
     @Override
+    public List<Debt> getDebtsByUser(CustomUserDetails user) {return debtRepo.getAllDebtsByUser(user);}
+
+    @Override
     @Transactional
     public Debt saveDebt(Debt debt) {
         CustomUserDetails user = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

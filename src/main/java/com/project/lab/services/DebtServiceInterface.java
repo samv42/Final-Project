@@ -1,5 +1,6 @@
 package com.project.lab.services;
 
+import com.project.lab.CustomUserDetails;
 import com.project.lab.models.Account;
 import com.project.lab.models.Debt;
 
@@ -9,6 +10,8 @@ public interface DebtServiceInterface {
     List<Debt> getAllDebts();
 
     List<Debt> getDebtsByAccount(Account account);
+
+    List<Debt> getDebtsByUser(CustomUserDetails user);
 
     Debt saveDebt(Debt debt);
 
