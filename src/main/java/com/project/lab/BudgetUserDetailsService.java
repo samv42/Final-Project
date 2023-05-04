@@ -81,4 +81,16 @@ public class BudgetUserDetailsService implements UserDetailsService {
             throw new IllegalStateException("Password is too short. Must be longer than 6 characters");
         }
     }
+    public void changeUserDetails(CustomUserDetails user){
+        CustomUserDetails original = getUserByUserId(user.getId());
+        checkPassword(user.getPassword());
+        original.setPassword(encoder.encode(user.getPassword()));
+        original.setUsername(user.getUsername());
+        try {
+            userRepo.save(original);
+        } catch (Exception e) {
+            throw new IllegalStateException(e.getMessage(), e.getCause());
+        }
+
+    }
 }

@@ -5,18 +5,18 @@ import lombok.*;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
 @Entity
-@Getter
-@Setter
+@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "user")
-public class CustomUserDetails implements UserDetails {
-
+public class CustomUserDetails implements UserDetails, Serializable {
+    private static final long serialVersionUID = 6527855645691638321L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

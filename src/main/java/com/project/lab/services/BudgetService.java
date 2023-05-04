@@ -1,7 +1,9 @@
 package com.project.lab.services;
 
+import com.project.lab.CustomUserDetails;
 import com.project.lab.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -22,6 +24,9 @@ public class BudgetService {
     @Autowired
     AccountService accountService;
 
+    @Autowired
+    PaymentService paymentService;
+
 
     public void addRecurringIncome(Income income){
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -36,6 +41,7 @@ public class BudgetService {
                 account.setBalance(account.getBalance() + income.getAmount());
                 accountService.saveAccount(account);
                 incomePaymentReceived(income);
+                addIncomePayment(income, incomeDate2);
             }
     }
 
@@ -71,13 +77,14 @@ public class BudgetService {
                 account.setBalance(account.getBalance() - amount);
                 accountService.saveAccount(account);
                 expensePaymentReceived(expense);
+                addExpensePayment(expense, expenseDate2);
             }
     }
 
     public void checkExpenseListPayments(){
         List<Expense> expensesList = expenseService.getAllExpenses();
         for(Expense expense : expensesList){
-            if(expense.isRecurring()) {
+            if(expense.isRecurring() && expense.isPaymentReceived() == false) {
                 isNextExpenseMonth(expense);
                 subtractRecurringExpense(expense);
             }
@@ -98,6 +105,7 @@ public class BudgetService {
             account.setBalance(account.getBalance() - amount);
             accountService.saveAccount(account);
             debtPaymentReceived(debt);
+            addDebtPayment(debt, debtDate2);
         }
     }
 
@@ -253,4 +261,41 @@ public class BudgetService {
                 }
             }
         }
+        public void addIncomePayment(Income income, LocalDate date){
+        CustomUserDetails user = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Payment payment = Payment.builder()
+                .type("Income")
+                .name(income.getName())
+                .amount(income.getAmount())
+                .date(date.toString())
+                .account(income.getAccount())
+                .user(user)
+                .build();
+        paymentService.savePayment(payment);
+        }
+    public void addExpensePayment(Expense expense, LocalDate date){
+        CustomUserDetails user = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String name = expense.getName();
+        Payment payment = Payment.builder()
+                .type("Expense")
+                .name(name)
+                .amount(expense.getAmount())
+                .date(date.toString())
+                .account(expense.getAccount())
+                .user(user)
+                .build();
+        paymentService.savePayment(payment);
+    }
+    public void addDebtPayment(Debt debt, LocalDate date){
+        CustomUserDetails user = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Payment payment = Payment.builder()
+                .type("Debt")
+                .name(debt.getCreditor())
+                .amount(debt.getPayment())
+                .date(date.toString())
+                .account(debt.getAccount())
+                .user(user)
+                .build();
+        paymentService.savePayment(payment);
+    }
     }

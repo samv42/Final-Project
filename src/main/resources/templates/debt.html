@@ -20,6 +20,8 @@
             <th>Payment</th>
             <th>Interest</th>
             <th>Account Charged</th>
+            <th th:if="${role == 'admin'}">User ID</th>
+            <th th:if="${role == 'admin'}">User Name</th>
         </tr>
         </thead>
         <tbody>
@@ -33,6 +35,8 @@
             <td th:text="${debt.interest}">interest</td>
             <td th:text="${debt.account.id}">Account Charged</td>
             <td th:text="${debt.account.name}">Account Charged</td>
+            <td th:if="${role == 'admin'}" th:text="${debt.getUserId()}">User ID</td>
+            <td th:if="${role == 'admin'}" th:text="${debt.getUser()}">User Name</td>
             <td><a th:href="@{'/edit-debt/' + ${debt.id}}">Edit</a>
                 <a th:href="@{'/delete-debt/' + ${debt.id}}">Delete</a></td>
         </tr>

@@ -5,6 +5,7 @@ import com.project.lab.CustomUserDetails;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @AllArgsConstructor
@@ -12,7 +13,9 @@ import javax.persistence.*;
 @Builder
 @Table(name = "accounts")
 @Data
-public class Account {
+
+public class Account implements Serializable {
+    private static final long serialVersionUID = 6527855645691638321L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;

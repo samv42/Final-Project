@@ -19,6 +19,8 @@
             <th>Recur Monthly</th>
             <th>Amount</th>
             <th>Account Charged</th>
+            <th th:if="${role == 'admin'}">User ID</th>
+            <th th:if="${role == 'admin'}">Username</th>
         </tr>
         </thead>
         <tbody>
@@ -31,6 +33,8 @@
             <td th:text="${expense.amount}">Amount</td>
             <td th:text="${expense.account.id}">Account Charged</td>
             <td th:text="${expense.account.name}">Account Charged</td>
+            <td th:if="${role == 'admin'}" th:text="${expense.getUserId()}">User ID</td>
+            <td th:if="${role == 'admin'}" th:text="${expense.getUser()}">User Name</td>
             <td><a th:href="@{'/edit-expense/' + ${expense.id}}">Edit</a>
             <a th:href="@{'/delete-expense/' + ${expense.id}}">Delete</a></td>
         </tr>

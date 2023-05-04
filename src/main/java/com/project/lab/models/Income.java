@@ -5,6 +5,7 @@ import com.project.lab.CustomUserDetails;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.Period;
 
 @Entity
@@ -13,7 +14,8 @@ import java.time.Period;
 @Builder
 @Table(name = "incomes")
 @Data
-public class Income {
+public class Income implements Serializable{
+    private static final long serialVersionUID = 6527855645691638321L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
@@ -22,7 +24,7 @@ public class Income {
     private boolean recurring;
     private double amount;
 
-    private boolean paymentReceived = false;
+    private boolean paymentReceived;
     private String paymentDate;
 
     @ManyToOne (optional = false)
@@ -38,4 +40,19 @@ public class Income {
         return user.getUsername();
     }
     public long getUserId() { return user.getId();}
+
+    @Override
+    public String toString() {
+        return "Income{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", date='" + date + '\'' +
+                ", recurring=" + recurring +
+                ", amount=" + amount +
+                ", paymentReceived=" + paymentReceived +
+                ", paymentDate='" + paymentDate + '\'' +
+                ", account=" + account +
+                ", user=" + user +
+                '}';
+    }
 }

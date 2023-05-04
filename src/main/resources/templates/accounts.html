@@ -18,6 +18,8 @@
             <th>Balance</th>
             <th>Target Balance</th>
             <th>Monthly Interest</th>
+            <th th:if="${role == 'admin'}">User ID</th>
+            <th th:if="${role == 'admin'}">User Name</th>
         </tr>
         </thead>
         <tbody>
@@ -28,6 +30,8 @@
             <td th:text="${account.balance}">Balance</td>
             <td th:text="${account.targetBalance}">Target Balance</td>
             <td th:text="${account.interest}">Interest</td>
+            <td th:if="${role == 'admin'}" th:text="${account.getUserId()}">User ID</td>
+            <td th:if="${role == 'admin'}" th:text="${account.getUser()}">User Name</td>
             <td><a th:href="@{'/edit-account/' + ${account.id}}">Edit</a>
                 <a th:href="@{'/delete-account/' + ${account.id}}">Delete</a>
                 <a th:href="@{'/transfer-money/' + ${account.id}}">Transfer money</a>
@@ -35,6 +39,7 @@
                 <a th:href="@{'/expenses-by-account/' + ${account.id}}">Expenses</a>
                 <a th:href="@{'/debts-by-account/' + ${account.id}}">Debts</a></td>
                 <a th:href="@{'/Account-Stats/' + ${account.id}}">Account Statistics</a></td>
+            <a th:href="@{'/accountPayments/' + ${account.id}}">Payment Reciepts</a></td>
         </tr>
         </tbody>
     </table>

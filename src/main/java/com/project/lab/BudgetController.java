@@ -6,6 +6,8 @@ import lombok.extern.java.Log;
 import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,6 +26,9 @@ import java.util.Objects;
 @Log4j2
 public class BudgetController {
     @Autowired
+    ArticleService articleService;
+
+    @Autowired
     public ExpenseService expenseService;
 
     @Autowired
@@ -37,6 +42,9 @@ public class BudgetController {
 
     @Autowired
     public BudgetService budgetService;
+
+    @Autowired
+    public PaymentService paymentService;
 
     @GetMapping({ "/", "/index" })
     public String index(Model model) {
@@ -137,8 +145,10 @@ public class BudgetController {
         CustomUserDetails user = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if(user.checkAuthority(Role.Roles.ROLE_ADMIN.name())){
             model.addAttribute("expenseList", expenseService.getAllExpenses());
+            model.addAttribute("role", "admin");
         }else {
             model.addAttribute("expenseList", expenseService.getExpensesByUser(user));
+            model.addAttribute("role", "user");
         }
         return "expenses";
     }
@@ -203,8 +213,10 @@ public class BudgetController {
         CustomUserDetails user = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if(user.checkAuthority(Role.Roles.ROLE_ADMIN.name())){
             model.addAttribute("debtList", debtService.getAllDebts());
+            model.addAttribute("role", "admin");
         }else {
             model.addAttribute("debtList", debtService.getDebtsByUser(user));
+            model.addAttribute("role", "user");
         }
         return "debt";
     }
@@ -271,8 +283,10 @@ public class BudgetController {
         CustomUserDetails user = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if(user.checkAuthority(Role.Roles.ROLE_ADMIN.name())){
             model.addAttribute("accountList", accountService.getAllAccounts());
+            model.addAttribute("role", "admin");
         }else {
             model.addAttribute("accountList", accountService.getAccountsByUser(user));
+            model.addAttribute("role", "user");
         }
         return "accounts";
     }
@@ -376,5 +390,43 @@ public class BudgetController {
     @GetMapping("/statistics")
     public String showStatisticsPage(Model model) {
         return "statistics";
+    }
+
+    @GetMapping("/budgetArticles")
+    public String budgetArticles(Model model) {
+        model.addAttribute("articleList", articleService.getEconomyNews());
+        return "Budget-Articles";
+    }
+    @GetMapping("/accountPayments/{id}")
+    public String showPaymentsPage(Model model, @PathVariable(name = "id") long id){
+       Account account = accountService.getAccount(id);
+       int p = 0;
+
+        PageRequest pageRequest = PageRequest.of(p, 5);
+        Page<Payment> page = paymentService.getPaymentsByAccountPageable(account, pageRequest);
+       //List<Payment> paymentList = paymentService.getPaymentsByAccount(account);
+        model.addAttribute("accountId", id);
+       model.addAttribute("page", p);
+       model.addAttribute("paymentList", page);
+       return "Payments";
+    }
+    @GetMapping("/nextPaymentPage/{id}/{page}")
+    //Path variable page number send back
+    public String showNextPaymentPage(@PathVariable(name = "id") long id,
+                                      @PathVariable(name = "page") int p,
+                                      Model model){
+        Account account = accountService.getAccount(id);
+        p++;
+        PageRequest pageRequest = PageRequest.of(p, 5);
+        Page<Payment> page = paymentService.getPaymentsByAccountPageable(account, pageRequest);
+        page.getTotalPages();
+        try{
+            model.addAttribute("accountId", id);
+            model.addAttribute("page", p);
+            model.addAttribute("paymentList", page);
+            return "Payments";
+        }catch(Exception e){
+            return "Income-Error";
+        }
     }
 }

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Payments</title>
+</head>
+<body>
+<h1>Payments</h1>
+<div align="center">
+  <h1>Payment List</h1>
+  <br/><br/>
+  <table border="1" cellpadding="10">
+    <thead>
+    <tr>
+      <th>Payment ID</th>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Date</th>
+      <th>Account ID</th>
+      <th>Account Name</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="payment : ${paymentList}">
+      <td th:text="${payment.id}">Payment ID</td>
+      <td th:text="${payment.type}">Type</td>
+      <td th:text="${payment.name}">Name</td>
+      <td th:text="${payment.date}">Date</td>
+      <td th:text="${payment.amount}">Amount</td>
+      <td th:text="${payment.account.id}">Account ID</td>
+      <td th:text="${payment.account.name}">Account Name</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+
+<h2 th:text="${page}">Page number</h2>
+<a th:href="@{'/nextPaymentPage/' + ${accountId} + '/' + ${page}}">Next</a>
+<a th:href= "@{/index}" >Home</a>
+</body>
+</html>

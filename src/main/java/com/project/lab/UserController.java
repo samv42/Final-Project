@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,7 @@ public class UserController {
     }
 
     @GetMapping("/new-user")
-    public String showNewDebtPage(Model model) {
+    public String showNewUserPage(Model model) {
         CustomUserDetails user = new CustomUserDetails();
         model.addAttribute("user", user);
         return "new-user";
@@ -37,4 +38,21 @@ public class UserController {
         userDetailsService.createNewUser(user);
         return "redirect:/";
     }
+
+    @GetMapping("/edit-user")
+    public String showEditUserPage(Model model) {
+        CustomUserDetails user = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        CustomUserDetails updateUser = new CustomUserDetails();
+        updateUser.setId(user.getId());
+        updateUser.setUsername(user.getUsername());
+        model.addAttribute("user", updateUser);
+        return "edit-user";
+    }
+
+    @PostMapping(value = "/update-user")
+    public String updateUser(@ModelAttribute("user") CustomUserDetails user) {
+        userDetailsService.changeUserDetails(user);
+        return "redirect:/";
+    }
+
 }

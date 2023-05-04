@@ -85,11 +85,13 @@ public class BudgetControllerTests {
     @Test
     public void testNewIncomeNormal() throws Exception {
         CustomUserDetails you = new CustomUserDetails();
+        Account account = new Account();
         you.setUsername("user");
+        when(accountService.getAllAccounts()).thenReturn(Collections.singletonList(account));
         mockMvc .perform(get("/new-income").with(user(you)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("text/html;charset=UTF-8"))
-                .andExpect(model().attribute("income", "income"));
+                .andExpect(model().attributeExists("income"));
     }
 
     @Test
@@ -122,6 +124,7 @@ public class BudgetControllerTests {
     public void testDeleteIncomeByIDNormal() throws Exception {
         CustomUserDetails user1 = new CustomUserDetails();
         user1.setUsername("user");
+        user1.setId(0l);
         Income income = Income.builder().name("main").date("02-02-2020").amount(4000).recurring(true).build();
         income.setUser(user1);
         when(incomeService.getIncome(anyLong())).thenReturn(income);

@@ -28,7 +28,7 @@ public class SecurConfig {
                 .formLogin().and()
                 .logout().and()
                 .authorizeRequests(auth -> auth
-                        .antMatchers("/css", "/js", "/error", "/index").permitAll()
+                        .antMatchers("/css", "/js", "/error", "/index","/static").permitAll()
                         /*.antMatchers(HttpMethod.GET, "/income", "/expenses", "/debt", "/accounts").permitAll()
                         .antMatchers(HttpMethod.POST, "/income", "/expenses", "/debt", "/accounts").permitAll()
                         .antMatchers(HttpMethod.DELETE, "/income", "/expenses", "/debt", "/accounts").permitAll()

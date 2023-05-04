@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Change Username and Password</title>
+</head>
+<body>
+<h1>Change Username and Password</h1>
+<br />
+<form action="#" th:action="@{/update-user}" th:object="${user}" method="post">
+    <table border="0" cellpadding="10">
+        <tr>
+            <td>User Name:</td>
+            <td><input type="text" th:field="*{username}" required/></td>
+        </tr>
+        <tr>
+            <td>Password:</td>
+            <td><input type="text" th:field="*{password}" required/></td>
+        </tr>
+    </table>
+    <input type="text" th:field="*{id}" hidden readonly/>
+    <td colspan="2"><button type="submit">Save</button> </td>
+</form>
+</div>
+</body>
+</html>

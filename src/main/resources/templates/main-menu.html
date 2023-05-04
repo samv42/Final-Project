@@ -19,8 +19,25 @@
         <br/><br/>
         <a th:href= "@{/statistics}" >Account Statistics</a>
         <br/><br/>
+        <a th:href= "@{/budgetArticles}" >Budget Articles</a>
+        <br/><br/>
         <a th:if="${role == 'admin'}" th:href="@{new-user}" >Create New User</a>
+        <a th:href="@{edit-user}">Change Username and Password</a>
         <br/><br/>
         <a href="#" th:href="@{/logout}">Log Out</a>
+        <h1 class="time"></h1>
+        <script type="text/javascript">
+    let timer = document.querySelector(".time");
+    let timeLeft = 30;
+    const timerCount = () => {
+      timer.textContent = `Page Update: ${timeLeft}`;
+      timeLeft -= 1;
+      if (timeLeft == 0) {
+        clearInterval(timerCount);
+        window.location.reload();
+      }
+    };
+    setInterval(timerCount, 1000);
+  </script>
 </body>
 </html>
