@@ -1,7 +1,6 @@
 package com.project.lab.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.project.lab.CustomUserDetails;
 import lombok.*;
 
 import javax.persistence.*;
@@ -24,6 +23,7 @@ public class Account implements Serializable {
     private double balance;
     private double targetBalance;
     private double interest;
+    private boolean goalReached;
 
     @ManyToOne(optional = false)
     @JoinColumn
@@ -37,6 +37,7 @@ public class Account implements Serializable {
         this.targetBalance = targetBalance;
         this.interest = interest;
         this.user = user;
+        goalReached = false;
     }
     public String getUser() {
         return user.getUsername();

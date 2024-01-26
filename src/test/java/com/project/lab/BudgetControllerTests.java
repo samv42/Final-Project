@@ -1,60 +1,55 @@
 package com.project.lab;
 
-import com.project.lab.models.Account;
-import com.project.lab.models.Debt;
-import com.project.lab.models.Expense;
-import com.project.lab.models.Income;
+import com.project.lab.controllers.BudgetController;
+import com.project.lab.models.*;
 import com.project.lab.services.*;
-
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Profile;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-
 import java.util.Collections;
-import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 @WebMvcTest(BudgetController.class)
+@ContextConfiguration(classes = BudgetingAppApplication.class)
+//@SpringBootTest(classes = BudgetController.class)
+//@AutoConfigureMockMvc
 @WithMockUser(value = "user")
 public class BudgetControllerTests {
+    @Autowired
+    RestTemplateBuilder restTemplateBuilder;
     @MockBean
-    IncomeService incomeService;
+    ArticleService articleService;
 
     @MockBean
-    ExpenseService expenseService;
+    public ExpenseService expenseService;
 
     @MockBean
-    DebtService debtService;
+    public IncomeService incomeService;
 
     @MockBean
-    AccountService accountService;
+    public DebtService debtService;
 
     @MockBean
-    BudgetService budgetService;
+    public AccountService accountService;
 
     @MockBean
-    BudgetUserDetailsService budgetUserDetailsService;
+    public BudgetService budgetService;
 
     @MockBean
-    PasswordEncoder passwordEncoder;
+    public PaymentService paymentService;
 
     @Autowired
     MockMvc mockMvc;
@@ -115,6 +110,7 @@ public class BudgetControllerTests {
                 .build();
         when(incomeService.getIncome(anyLong())).thenReturn(income);
         mockMvc.perform(get("/edit-income/1").with(user(user1)))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("text/html;charset=UTF-8"))
                 .andExpect(model().attribute("income", "income"));

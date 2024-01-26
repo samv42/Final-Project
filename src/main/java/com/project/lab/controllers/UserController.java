@@ -1,10 +1,9 @@
-package com.project.lab;
+package com.project.lab.controllers;
 
-import com.project.lab.models.Debt;
-
+import com.project.lab.models.CustomUserDetails;
+import com.project.lab.models.Role;
+import com.project.lab.services.BudgetUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;

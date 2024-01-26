@@ -1,9 +1,10 @@
-package com.project.lab;
+package com.project.lab.services;
 
+import com.project.lab.models.CustomUserDetails;
+import com.project.lab.models.Role;
 import com.project.lab.repo.UserRepo;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -12,7 +13,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 

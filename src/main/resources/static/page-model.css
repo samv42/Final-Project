@@ -3,7 +3,11 @@ h2 {
     font-size: 1.5em;
     text-transform: uppercase;
 }
-
+table{
+border="1"
+cellpadding="10"
+ --bs-danger-border-subtle
+}
 strong {
     font-weight: 700;
     background-color: lightblue;
@@ -14,10 +18,6 @@ p {
 }
 
 <style>
-table {
-  border-collapse: collapse;
-  width: 100%;
-}
 
 th, td {
   text-align: left;

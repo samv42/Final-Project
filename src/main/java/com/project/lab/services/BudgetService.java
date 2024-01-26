@@ -1,6 +1,6 @@
 package com.project.lab.services;
 
-import com.project.lab.CustomUserDetails;
+import com.project.lab.models.CustomUserDetails;
 import com.project.lab.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -297,5 +297,27 @@ public class BudgetService {
                 .user(user)
                 .build();
         paymentService.savePayment(payment);
+    }
+    public boolean checkGoal(Account account)   {
+        if(account.isGoalReached()){
+            return false;
+        }
+        if(account.getBalance() >= account.getTargetBalance()){
+            account.setGoalReached(true);
+            accountService.saveAccount(account);
+            return true;
+        }
+        return false;
+    }
+    public List<Account> checkGoals()   {
+        CustomUserDetails user = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        List<Account> accounts = accountService.getAccountsByUser(user);
+        List<Account> goalsReached = new ArrayList<>();
+        for(Account account : accounts){
+            if(checkGoal(account)){
+                goalsReached.add(account);
+            }
+        }
+        return goalsReached;
     }
     }

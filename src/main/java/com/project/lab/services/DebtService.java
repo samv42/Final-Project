@@ -1,16 +1,14 @@
 package com.project.lab.services;
 
-import com.project.lab.CustomUserDetails;
+import com.project.lab.models.CustomUserDetails;
 import com.project.lab.models.Account;
 import com.project.lab.models.Debt;
-import com.project.lab.models.Income;
 import com.project.lab.repo.DebtRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service

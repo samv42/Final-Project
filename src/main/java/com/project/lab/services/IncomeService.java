@@ -1,6 +1,6 @@
 package com.project.lab.services;
 
-import com.project.lab.CustomUserDetails;
+import com.project.lab.models.CustomUserDetails;
 import com.project.lab.models.Account;
 import com.project.lab.models.Income;
 import com.project.lab.repo.IncomeRepo;
@@ -12,7 +12,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -44,7 +43,7 @@ public class IncomeService implements IncomeServiceInterface {
     }
 
     @Override
-    @Cacheable(value = "incomes", key = "#incomeId", sync = true)
+    @Cacheable(value = "incomes", key = "#id", sync = true)
     public Income getIncome(Long id) {
         return incomeRepo.findById(id)
                 .orElse(null);

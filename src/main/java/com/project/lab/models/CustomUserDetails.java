@@ -1,6 +1,7 @@
-package com.project.lab;
+package com.project.lab.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.project.lab.models.Role;
 import lombok.*;
 import org.springframework.security.core.userdetails.UserDetails;
 

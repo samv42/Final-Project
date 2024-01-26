@@ -1,9 +1,6 @@
-package com.project.lab;
+package com.project.lab.configs;
 
-import com.project.lab.models.Account;
-import com.project.lab.models.Debt;
-import com.project.lab.models.Expense;
-import com.project.lab.models.Income;
+import com.project.lab.models.*;
 import com.project.lab.repo.AccountRepo;
 import com.project.lab.repo.DebtRepo;
 import com.project.lab.repo.ExpenseRepo;
@@ -16,7 +13,6 @@ import org.springframework.stereotype.Component;
 import javax.persistence.EntityNotFoundException;
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Optional;
 
 @Component
 public class BudgetPermissionEvaluator implements PermissionEvaluator {

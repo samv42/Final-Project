@@ -3,23 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <title>Debt</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
 </head>
 <body>
 <h1>Debt</h1>
 <div align="center">
     <h1>Debt List</h1>
     <br/><br/>
-    <table border="1" cellpadding="10">
+    <table border="1" cellpadding="10" class="table table-hover">
         <thead>
         <tr>
-            <th>Debt ID</th>
-            <th>Creditor</th>
-            <th>Type</th>
-            <th>Date</th>
-            <th>Amount</th>
-            <th>Payment</th>
-            <th>Interest</th>
-            <th>Account Charged</th>
+            <th scope="col">Debt ID</th>
+            <th scope="col">Creditor</th>
+            <th scope="col">Type</th>
+            <th scope="col">Date</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Payment</th>
+            <th scope="col">Interest</th>
+            <th scope="col">Account Charged</th>
             <th th:if="${role == 'admin'}">User ID</th>
             <th th:if="${role == 'admin'}">User Name</th>
         </tr>
@@ -37,14 +39,13 @@
             <td th:text="${debt.account.name}">Account Charged</td>
             <td th:if="${role == 'admin'}" th:text="${debt.getUserId()}">User ID</td>
             <td th:if="${role == 'admin'}" th:text="${debt.getUser()}">User Name</td>
-            <td><a th:href="@{'/edit-debt/' + ${debt.id}}">Edit</a>
-                <a th:href="@{'/delete-debt/' + ${debt.id}}">Delete</a></td>
+            <td><a class="btn btn-outline-danger" th:href="@{'/edit-debt/' + ${debt.id}}">Edit</a>
+                <a class="btn btn-outline-warning" th:href="@{'/delete-debt/' + ${debt.id}}">Delete</a></td>
         </tr>
         </tbody>
     </table>
 </div>
-<a th:href="@{/new-debt}">Add New Debt</a>
-<a th:href= "@{/index}" >Home</a>
-
+<a class="btn btn-outline-primary" th:href="@{/new-debt}">Add New Debt</a>
+<a class="btn btn-outline-success" th:href= "@{/index}" >Home</a>
 </body>
 </html>

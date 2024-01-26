@@ -9,7 +9,8 @@
 <body>
 <h1>Accounts</h1>
 <div align="center">
-    <h1>Account List</h1>
+    <h1>Great job saving!</h1>
+        <h1>You have achieved your target balance on the following accounts:</h1>
     <br/><br/>
     <table border="1" cellpadding="10">
         <thead>
@@ -20,7 +21,6 @@
             <th>Balance</th>
             <th>Target Balance</th>
             <th>Monthly Interest</th>
-            <th>Target Balance Achieved?</th>
             <th th:if="${role == 'admin'}">User ID</th>
             <th th:if="${role == 'admin'}">User Name</th>
         </tr>
@@ -33,9 +33,6 @@
             <td th:text="${account.balance}">Balance</td>
             <td th:text="${account.targetBalance}">Target Balance</td>
             <td th:text="${account.interest}">Interest</td>
-            <td th:text="${account.goalReached}">Target Balance Reached?</td>
-            <td th:if="${role == 'admin'}" th:text="${account.getUserId()}">User ID</td>
-            <td th:if="${role == 'admin'}" th:text="${account.getUser()}">User Name</td>
             <td><a th:href="@{'/edit-account/' + ${account.id}}">Edit</a>
                 <a th:href="@{'/delete-account/' + ${account.id}}">Delete</a>
                 <a th:href="@{'/transfer-money/' + ${account.id}}">Transfer money</a>

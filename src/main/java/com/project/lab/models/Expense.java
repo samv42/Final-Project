@@ -1,7 +1,6 @@
 package com.project.lab.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.project.lab.CustomUserDetails;
 import lombok.*;
 
 import javax.persistence.*;

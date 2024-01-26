@@ -1,6 +1,6 @@
 package com.project.lab.services;
 
-import com.project.lab.CustomUserDetails;
+import com.project.lab.models.CustomUserDetails;
 import com.project.lab.models.Account;
 
 import java.util.List;

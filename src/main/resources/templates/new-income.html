@@ -1,40 +1,81 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
 <head>
     <meta charset="UTF-8">
     <title>Add New Income</title>
 </head>
 <body>
 <div align="center">
-    <h1>Add New Income</h1>
-    <br />
-    <form action="#" th:action="@{/save-income}" th:object="${income}" method="post">
-        <table border="0" cellpadding="10">
-            <tr>
-                <td>Name:</td>
-                <td><input type="text" field="*{name}" name="name" required/></td>
-            </tr>
-            <tr>
-                <td>Date:</td>
-                <td><input type="date" field="*{date}" name="date" required/></td>
-            </tr>
-            <tr>
-                <td>Recur Monthly:</td>
-                <td><textarea type="boolean" field="*{recurring}" name="recurring" required></textarea></td>
-            </tr>
-            <tr>
-                <td>Amount:</td>
-                <td><textarea type="number" field="*{amount}" name="amount" required></textarea></td>
-            </tr>
-            <tr>
-                <td colspan="2"><button type="submit">Save</button> </td>
-            </tr>
-            <tr>
-                <td>Account ID (Account income will go to):</td>
-                <td><input type="number" field="*{account}" name="account" required/></td>
-            </tr>
-        </table>
-    </form>
+    <div class="container-sm">
+        <h1>Add New Income</h1>
+        <br/>
+        <form action="#" th:action="@{/save-income}" th:object="${income}" method="post">
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="inputGroup-name">Name</span>
+                <input type="text" class="form-control" aria-label="Add Income's Name"
+                       aria-describedby="inputGroup-name" field="*{name}" name="name" required>
+            </div>
+            <div class="row g-3">
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="inputGroup-date">Date</span>
+                        <input type="date" class="form-control" aria-label="Add Date"
+                               aria-describedby="inputGroup-date" field="*{date}" name="date" required>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked"
+                               field="*{recurring}" name="recurring" checked>
+                        <label class="form-check-label" for="flexSwitchCheckChecked">Is it recurring</label>
+                    </div>
+                </div>
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="inputGroup-amount">Amount</span>
+                <input type="number" class="form-control" aria-label="Add Amount"
+                       aria-describedby="inputGroup-amount" field="*{amount}" name="amount" required>
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="inputGroup-account">Account Id</span>
+                <input type="number" class="form-control" aria-label="Which Amount?"
+                       aria-describedby="inputGroup-amount" field="*{account}" name="account" required>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-outline-primary">Submit Income</button>
+            </div>
+            <!--        <table border="0" cellpadding="10">-->
+            <!--            <tr>-->
+            <!--                <td>Name:</td>-->
+            <!--                <td><input type="text" field="*{name}" name="name" required/></td>-->
+            <!--            </tr>-->
+            <!--            <tr>-->
+            <!--                <td>Date:</td>-->
+            <!--                <td><input type="date" field="*{date}" name="date" required/></td>-->
+            <!--            </tr>-->
+            <!--            <tr class="form-check form-switch">-->
+            <!--                <input class="form-check-input" type="checkbox" role="switch" field="*{recurring}" name="recurring" id="flexSwitchCheckDefault">-->
+            <!--                <label class="form-check-label" for="flexSwitchCheckDefault">Recur Monthly</label>-->
+            <!--            </tr>-->
+            <!--            <tr>-->
+            <!--                <td>Amount:</td>-->
+            <!--                <td><textarea type="number" field="*{amount}" name="amount" required></textarea></td>-->
+            <!--            </tr>-->
+            <!--            <tr>-->
+            <!--                <td>Account ID (Account income will go to):</td>-->
+            <!--                <td><input type="number" field="*{account}" name="account" required/></td>-->
+            <!--            </tr>-->
+            <!--            <tr>-->
+            <!--                <a class="btn btn-outline-primary"><button type="submit">Save</button> </a>-->
+            <!--            </tr>-->
+            <!--        </table>-->
+        </form>
+    </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
 </body>
 </html>

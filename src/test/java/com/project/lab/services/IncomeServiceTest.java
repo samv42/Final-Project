@@ -1,11 +1,10 @@
 package com.project.lab.services;
 
-import com.project.lab.CustomUserDetails;
+import com.project.lab.models.CustomUserDetails;
 import com.project.lab.models.Account;
 import com.project.lab.models.Income;
 import com.project.lab.repo.IncomeRepo;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;

@@ -1,8 +1,7 @@
 package com.project.lab.repo;
 
-import com.project.lab.CustomUserDetails;
+import com.project.lab.models.CustomUserDetails;
 import com.project.lab.models.Account;
-import com.project.lab.models.Income;
 import com.project.lab.models.Payment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

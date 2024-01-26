@@ -36,7 +36,7 @@
 
 
 <h2 th:text="${page}">Page number</h2>
-<a th:href="@{'/nextPaymentPage/' + ${accountId} + '/' + ${page}}">Next</a>
+<a th:if="${!paymentList.isEmpty()}" th:href="@{'/nextPaymentPage/' + ${accountId} + '/' + ${page}}">Next</a>
 <a th:href= "@{/index}" >Home</a>
 </body>
 </html>

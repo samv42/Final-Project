@@ -1,6 +1,6 @@
 package com.project.lab.repo;
 
-import com.project.lab.CustomUserDetails;
+import com.project.lab.models.CustomUserDetails;
 import com.project.lab.models.Account;
 import com.project.lab.models.Income;
 import org.springframework.data.jpa.repository.JpaRepository;

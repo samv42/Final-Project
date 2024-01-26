@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Error Page</title>
+</head>
+<body>
+<h3>Error Page</h3>
+<br></br>
+<h3 th:text="${message.toString()}"></h3>
+<br></br>
+<a class="btn btn-outline-success" th:href= "@{/index}" >Home</a>
+</body>
+</html>

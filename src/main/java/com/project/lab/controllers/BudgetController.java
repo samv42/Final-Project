@@ -1,26 +1,18 @@
-package com.project.lab;
+package com.project.lab.controllers;
 
 import com.project.lab.models.*;
 import com.project.lab.services.*;
-import lombok.extern.java.Log;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 @Controller
 @Log4j2
@@ -53,12 +45,22 @@ public class BudgetController {
         budgetService.checkIncomeListPayments();
         budgetService.checkExpenseListPayments();
         budgetService.checkDebtListPayments();
-        if(user.checkAuthority(Role.Roles.ROLE_ADMIN.name())){
-            model.addAttribute("role", "admin");
-        }else {
-            model.addAttribute("role", "user");
+        List<Account> goalsReached = budgetService.checkGoals();
+        if(!goalsReached.isEmpty()) {
+            model.addAttribute("goalReached", true);
         }
+        model.addAttribute("account-list", goalsReached);
+        /*if(!goalsReached.isEmpty())    {
+            model.addAttribute("accountList", goalsReached);
+            return "goals-reached";
+        }*/
         return "main-menu";
+    }
+
+    @GetMapping("/goal-reached")
+    public String showGoalReachedPage(@ModelAttribute("account-list") List<Account> accounts, Model model ) {
+        model.addAttribute("account-list", accounts);
+        return "goals-reached";
     }
 
     @GetMapping("/income")
@@ -79,25 +81,29 @@ public class BudgetController {
             model.addAttribute("income", income);
             return "new-income";
         }else{
-            log.error("Accounts not found. User must have account to send income to.");
-            return "Income-Error";
+            String error = "Accounts not found. User must have account to send income to.";
+            log.error(error);
+            model.addAttribute("message", error);
+            return "error-page";
         }
     }
     @GetMapping("/edit-income/{id}")
     public String showEditIncomePage(Model model, @PathVariable(name = "id") long id) {
         CustomUserDetails user = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Income income = incomeService.getIncome(id);
-        if(income.getUserId() == user.getId()) {
+        if(income!=null && income.getUserId() == user.getId()) {
             model.addAttribute("income", incomeService.getIncome(id));
             return "edit-income";
             }else{
-            log.error("Couldn't find income for id " + id);
-            return "Income-Error";
+            String error = ("Couldn't find income for id " + id);
+            log.error(error);
+            model.addAttribute("message", error);
+            return "error-page";
         }
 
     }
     @PostMapping(value = "/save-income")
-    public String saveIncome(@ModelAttribute("income") Income income) {
+    public String saveIncome(@ModelAttribute("income") Income income, Model model) {
         CustomUserDetails user = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if(income != null && income.getAccount() != null && accountService.getAccount(income.getAccount().getId()) != null) {
             if (user.getId() == accountService.getAccount(income.getAccount().getId()).getUserId()) {
@@ -108,7 +114,13 @@ public class BudgetController {
                 incomeService.saveIncome(income);
             } else {
                 log.error("Account not found.");
+                model.addAttribute("message", "Account not found.");
+                return "error-page";
             }
+        }else{
+            log.error("Account not found.");
+            model.addAttribute("message", "Account not found.");
+            return "error-page";
         }
         return "redirect:/";
     }
@@ -126,15 +138,16 @@ public class BudgetController {
         return "redirect:/";
     }
     @RequestMapping("/delete-income/{id}")
-    public String deleteIncome(@PathVariable(name = "id") long id) {
+    public String deleteIncome(@PathVariable(name = "id") long id, Model model) {
         CustomUserDetails user = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Income income = incomeService.getIncome(id);
-        if(income.getUserId() == user.getId()) {
+        if(income.getUserId() == user.getId() && income != null) {
             incomeService.deleteIncome(id);
             return "redirect:/";
         }else{
             log.error("Couldn't find income for id " + id);
-            return "Income-Error";
+            model.addAttribute("message", "Couldn't find income for id " + id);
+            return "error-page";
         }
     }
     //
@@ -240,7 +253,7 @@ public class BudgetController {
             model.addAttribute("debt", debtService.getDebt(id));
             return "edit-debt";
         }else {
-            log.error("Couldn't find debt for id " + id);
+            log.error("Could not find debt for id " + id);
             return "Income-Error";
         }
     }
@@ -253,10 +266,9 @@ public class BudgetController {
     @PostMapping("/update-debt/{id}")
     public String updateDebt(@PathVariable(name = "id") long id, @ModelAttribute("debt") Debt debt, Model model) {
         if (id != debt.getId()) {
+            String errorMessage = ("Cannot find debt with id " + id);
             log.error("Couldn't find debt for id " + id);
-            model.addAttribute("message",
-                    "Cannot update, debt id " + debt.getId()
-                            + " doesn't match id to be updated: " + id + ".");
+            model.addAttribute("message", errorMessage);
             return "error-page";
         }
         debtService.saveDebt(debt);
@@ -299,7 +311,14 @@ public class BudgetController {
     }
     @GetMapping("/edit-account/{id}")
     public String showEditAccountPage(Model model, @PathVariable(name = "id") long id) {
-        model.addAttribute("account", accountService.getAccount(id));
+        Account account = accountService.getAccount(id);
+        if (account == null) {
+            log.error("Cannot find account with id " + id);
+            String errorMessage = ("Cannot find account with id " + id);
+            model.addAttribute("message", errorMessage);
+            return "error-page";
+        }
+        model.addAttribute("account", account);
         return "edit-account";
     }
     @PostMapping(value = "/save-account")
@@ -329,20 +348,30 @@ public class BudgetController {
     }
 
     @PostMapping("/update-account/{id}")
-    public String updateAccount(@PathVariable(name = "id") long id, @ModelAttribute("account") Account account, Model model) {
-        if (id != account.getId()) {
-            model.addAttribute("message",
-                    "Cannot update, account id " + account.getId()
-                            + " doesn't match id to be updated: " + id + ".");
+    public String updateAccount(@PathVariable(name = "id") long id, Model model) {
+        Account account = accountService.getAccount(id);
+        if (account == null) {
+            log.error("Cannot find account with id " + id);
+            String errorMessage = ("Cannot find account with id " + id);
+            model.addAttribute("message", errorMessage);
             return "error-page";
         }
         accountService.saveAccount(account);
         return "redirect:/";
     }
     @RequestMapping("/delete-account/{id}")
-    public String deleteAccount(@PathVariable(name = "id") long id) {
-        accountService.deleteAccount(id);
-        return "redirect:/";
+    public String deleteAccount(@PathVariable(name = "id") long id, Model model) {
+        Account account = accountService.getAccount(id);
+        if(incomeService.getIncomesByAccount(account).isEmpty()
+                && expenseService.getExpensesByAccount(account).isEmpty()
+                && debtService.getDebtsByAccount(account).isEmpty()) {
+            accountService.deleteAccount(id);
+            return "redirect:/";
+        }else{
+            String errorMessage = ("You must delete incomes, expenses, and debts associated with the account before deleting.");
+            model.addAttribute("message", errorMessage);
+            return "error-page";
+        }
     }
     @GetMapping("/transfer-money/{id}")
     public String showTransferMoneyPage(Model model, @PathVariable(name = "id") long id) {
@@ -419,14 +448,19 @@ public class BudgetController {
         p++;
         PageRequest pageRequest = PageRequest.of(p, 5);
         Page<Payment> page = paymentService.getPaymentsByAccountPageable(account, pageRequest);
-        page.getTotalPages();
+        if(page.isEmpty()){
+            p--;
+            PageRequest lastPageRequest = PageRequest.of(p, 5);
+            page = paymentService.getPaymentsByAccountPageable(account, lastPageRequest);
+        }
         try{
             model.addAttribute("accountId", id);
             model.addAttribute("page", p);
             model.addAttribute("paymentList", page);
             return "Payments";
         }catch(Exception e){
-            return "Income-Error";
+            model.addAttribute("message", "Could not find payments.");
+            return "error-page";
         }
     }
 }
