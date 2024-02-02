@@ -24,7 +24,6 @@ import java.util.Collections;
 import java.util.List;
 
 @SpringBootApplication
-@EnableJpaRepositories(bootstrapMode = BootstrapMode.LAZY)
 @EnableCaching
 public class BudgetingAppApplication {
 

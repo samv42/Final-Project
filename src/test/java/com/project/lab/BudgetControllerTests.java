@@ -23,33 +23,28 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 @WebMvcTest(BudgetController.class)
-@ContextConfiguration(classes = BudgetingAppApplication.class)
-//@SpringBootTest(classes = BudgetController.class)
-//@AutoConfigureMockMvc
 @WithMockUser(value = "user")
 public class BudgetControllerTests {
-    @Autowired
-    RestTemplateBuilder restTemplateBuilder;
     @MockBean
-    ArticleService articleService;
+    private ArticleService articleService;
 
     @MockBean
-    public ExpenseService expenseService;
+    private ExpenseService expenseService;
 
     @MockBean
-    public IncomeService incomeService;
+    private IncomeService incomeService;
 
     @MockBean
-    public DebtService debtService;
+    private DebtService debtService;
 
     @MockBean
-    public AccountService accountService;
+    private AccountService accountService;
 
     @MockBean
-    public BudgetService budgetService;
+    private BudgetService budgetService;
 
     @MockBean
-    public PaymentService paymentService;
+    private PaymentService paymentService;
 
     @Autowired
     MockMvc mockMvc;
