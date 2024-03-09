@@ -11,7 +11,6 @@ import javax.persistence.*;
 @Builder
 @Table(name = "expenses")
 @Data
-
 public class Expense {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -32,6 +31,7 @@ public class Expense {
     @ManyToOne(optional = false)
     @JoinColumn
     @JsonIgnore
+    @ToString.Exclude
     private CustomUserDetails user;
 
     public String getUser() {

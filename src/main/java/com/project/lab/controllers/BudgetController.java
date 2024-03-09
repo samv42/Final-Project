@@ -17,6 +17,8 @@ import java.util.List;
 @Controller
 @Log4j2
 public class BudgetController {
+    public static final String Next_Payment_Page = "/NextPaymentPage";
+
     @Autowired
     ArticleService articleService;
 
@@ -408,14 +410,6 @@ public class BudgetController {
             return "Account-Stats-Negative";
         }
     }
-    /*@RequestMapping(value="/logout", method = RequestMethod.GET)
-    public String logoutPage (HttpServletRequest request, HttpServletResponse response) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null){
-            new SecurityContextLogoutHandler().logout(request, response, auth);
-        }
-        return "redirect:/login?logout";
-    }*/
     @GetMapping("/statistics")
     public String showStatisticsPage(Model model) {
         return "statistics";
@@ -439,7 +433,7 @@ public class BudgetController {
        model.addAttribute("paymentList", page);
        return "Payments";
     }
-    @GetMapping("/nextPaymentPage/{id}/{page}")
+    @GetMapping(Next_Payment_Page + "/{id}/{page}")
     //Path variable page number send back
     public String showNextPaymentPage(@PathVariable(name = "id") long id,
                                       @PathVariable(name = "page") int p,

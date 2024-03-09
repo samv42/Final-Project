@@ -1,8 +1,6 @@
 package com.project.lab.services;
 
-import com.project.lab.models.Account;
-import com.project.lab.models.CustomUserDetails;
-import com.project.lab.models.Income;
+import com.project.lab.models.*;
 import com.project.lab.repo.AccountRepo;
 import com.project.lab.repo.IncomeRepo;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,7 +22,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest(classes = BudgetService.class)
@@ -59,6 +56,31 @@ class BudgetServiceTest {
 
     CustomUserDetails user = CustomUserDetails.builder()
             .username("user")
+            .build();
+
+    private Account testAccount = Account.builder()
+            .name("main")
+            .type("Savings")
+            .balance(0)
+            .interest(0)
+            .goalReached(true)
+            .user(user)
+            .targetBalance(400).build();
+    private Income testIncome = Income.builder()
+            .name("income")
+            .amount(200)
+            .recurring(true)
+            .date("2022-01-01")
+            .account(testAccount)
+            .paymentDate("2022-01-01")
+            .paymentReceived(true)
+            .build();
+    private Expense expense = Expense.builder()
+            .name("expense")
+            .amount(200)
+            .recurring(true)
+            .date("2022-12-31")
+            .account(testAccount)
             .build();
 
     @BeforeEach
@@ -97,6 +119,14 @@ class BudgetServiceTest {
         assertEquals(200, argumentCaptor.getValue().getBalance());
 
     }
+
+    @Test
+    void addIncome() {
+        when(accountService.getAccount(any())).thenReturn(testAccount);
+        budgetService.addIncome(testIncome);
+        assertEquals(200d, accountService.getAccount(testAccount.getId()).getBalance());
+    }
+
     @Test
     void checkIncomeListPayments() {
         Account account = Account.builder()
@@ -120,6 +150,11 @@ class BudgetServiceTest {
         budgetService.checkIncomeListPayments();
 
     }
+
+    @Test
+    void subtractRecurringExpense() {
+        budgetService.subtractRecurringExpense(expense);
+    }
     @Test
     void getTotalAccountIncome() {
         when(incomeService.getIncomesByAccount(any())).thenReturn(new ArrayList<>());
@@ -135,6 +170,12 @@ class BudgetServiceTest {
     }
 
     @Test
+    void isNextIncomeMonth() {
+        budgetService.isNextIncomeMonth(testIncome);
+        assertEquals(false, testIncome.isPaymentReceived());
+    }
+
+    @Test
     void howLongUntilGoal() {
         Account account = Account.builder()
                 .name("main")
@@ -144,6 +185,27 @@ class BudgetServiceTest {
         when(accountService.getAccount((long)1)).thenReturn(account);
         int actual = budgetService.howLongUntilGoal((long)1, (double)200, (double)0);
         assertEquals(2, actual);
+    }
+
+    @Test
+    void transferMoney() {
+        Account account2 = Account.builder()
+                .name("main2")
+                .type("Savings")
+                .balance(200)
+                .interest(0)
+                .goalReached(true)
+                .user(user)
+                .targetBalance(400).build();
+        InternalTransfer internalTransfer = InternalTransfer.builder()
+                .money(200)
+                .targetAccount(testAccount.getId())
+                .transferringAccount(account2.getId())
+                .build();
+        when(accountService.getAccount(any())).thenReturn(account2).thenReturn(testAccount);
+        budgetService.transferMoney(internalTransfer);
+        Double actual = testAccount.getBalance();
+        assertEquals(200d, actual);
     }
     @Test
     void howLongUntilNoMoney() {

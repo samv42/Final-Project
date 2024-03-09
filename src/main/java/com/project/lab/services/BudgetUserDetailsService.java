@@ -73,7 +73,7 @@ public class BudgetUserDetailsService implements UserDetailsService {
         }
     }
 
-    private void checkPassword(String password) {
+    public void checkPassword(String password) {
         if (password == null) {
             throw new IllegalStateException("You must set a password");
         }

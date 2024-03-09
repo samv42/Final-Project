@@ -4,18 +4,25 @@ import com.project.lab.controllers.BudgetController;
 import com.project.lab.models.*;
 import com.project.lab.services.*;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.data.domain.*;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.RequestBuilder;
+
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Collections;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -48,6 +55,21 @@ public class BudgetControllerTests {
 
     @Autowired
     MockMvc mockMvc;
+
+    @Test
+    public void testIndexGoalReached() throws Exception {
+        CustomUserDetails user1 = new CustomUserDetails();
+        user1.setUsername("user");
+        Account account = Account.builder()
+                .id(1)
+                .user(user1)
+                .build();
+        when(budgetService.checkGoals()).thenReturn(Arrays.asList(account));
+        mockMvc.perform(get("/index").with(user(user1)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("text/html;charset=UTF-8"))
+                .andExpect(model().attribute("account-list", hasSize(1)));
+    }
 
     @Test
     public void testIncomePageNormal() throws Exception {
@@ -108,7 +130,12 @@ public class BudgetControllerTests {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("text/html;charset=UTF-8"))
-                .andExpect(model().attribute("income", "income"));
+                .andExpect(model().attribute("income", income));
+    }
+
+    @Test
+    public void testSaveIncome() throws Exception {
+
     }
 
     @Test
@@ -162,10 +189,11 @@ public class BudgetControllerTests {
         }
         @Test
         public void testNewExpenseNormal() throws Exception {
+            when(accountService.getAllAccounts()).thenReturn(Arrays.asList(new Account()));
             mockMvc .perform(get("/new-expense"))
                     .andExpect(status().isOk())
                     .andExpect(content().contentType("text/html;charset=UTF-8"))
-                    .andExpect(model().attribute("expense", "expense"));
+                    .andExpect(model().attributeExists("expense"));
         }
     @Test
     public void testEditExpenseByIdNormal() throws Exception {
@@ -190,7 +218,7 @@ public class BudgetControllerTests {
         mockMvc.perform(get("/edit-expense/1").with(user(user1)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("text/html;charset=UTF-8"))
-                .andExpect(model().attribute("expense", "expense"));
+                .andExpect(model().attribute("expense", expense));
     }
 
     @Test
@@ -267,6 +295,68 @@ public class BudgetControllerTests {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("text/html;charset=UTF-8"))
                 .andExpect(model().attribute("accountList", hasSize(1)));
+    }
+
+    @Test
+    public void showAccountStatisticsPagePositive() throws Exception{
+        when(budgetService.getTotalAccountIncome(anyLong())).thenReturn(100d);
+        when(budgetService.getTotalAccountCosts(anyLong())).thenReturn(50d);
+        when(budgetService.isAccountMakingMoney(anyLong(), anyDouble(), anyDouble())).thenReturn(true);
+        when(budgetService.howLongUntilGoal(anyLong(), anyDouble(), anyDouble())).thenReturn(2);
+        mockMvc.perform(get("/Account-Stats/" + 5l))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("text/html;charset=UTF-8"))
+                .andExpect(model().attributeExists("accountStat"));
+    }
+
+    @Test
+    public void showPaymentsPage() throws Exception {
+        Account account = Account.builder()
+                .name("main")
+                .type("savings")
+                .balance(400)
+                .interest(0)
+                .build();
+        Payment payment = Payment.builder()
+                        .name("payment")
+                        .amount(500)
+                        .date("1/1/2023")
+                        .type("income")
+                        .account(account)
+                        .build();
+        PageRequest pageRequest = PageRequest.of(0, 5);
+        Page<Payment> page = new PageImpl<Payment>(Arrays.asList(payment), pageRequest, 1);
+        when(accountService.getAccount(any())).thenReturn(account);
+        when(paymentService.getPaymentsByAccountPageable(any(), any())).thenReturn(page);
+
+        mockMvc.perform(get("/accountPayments/" + 5))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("text/html;charset=UTF-8"))
+                .andExpect(model().attribute("paymentList", page));
+    }
+    @Test
+    public void showNextPaymentPage() throws Exception{
+        Account account = Account.builder()
+                .name("main")
+                .type("savings")
+                .balance(400)
+                .interest(0)
+                .build();
+        Payment payment = Payment.builder()
+                .name("payment")
+                .amount(500)
+                .date("1/1/2023")
+                .type("income")
+                .account(account)
+                .build();
+        PageRequest pageRequest = PageRequest.of(0, 5);
+        Page<Payment> page = new PageImpl<Payment>(Arrays.asList(payment), pageRequest, 1);
+        when(accountService.getAccount(anyLong())).thenReturn(account);
+        when(paymentService.getPaymentsByAccountPageable(any(), any())).thenReturn(page);
+        mockMvc.perform(get(BudgetController.Next_Payment_Page + "/" + 5 + "/" + 1))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("text/html;charset=UTF-8"))
+                .andExpect(model().attribute("paymentList", page));
     }
     }
 
