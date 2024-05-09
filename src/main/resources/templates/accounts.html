@@ -9,20 +9,21 @@
 <body>
 <h1>Accounts</h1>
 <div align="center">
-    <h1>Account List</h1>
+    <strong>Account List</strong>
     <br/><br/>
-    <table border="1" cellpadding="10">
+    <table border="1" cellpadding="10" class="table table-hover">
         <thead>
         <tr>
-            <th>Account ID</th>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Balance</th>
-            <th>Target Balance</th>
-            <th>Monthly Interest</th>
-            <th>Target Balance Achieved?</th>
-            <th th:if="${role == 'admin'}">User ID</th>
-            <th th:if="${role == 'admin'}">User Name</th>
+            <th scope="col">Account ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Type</th>
+            <th scope="col">Balance</th>
+            <th scope="col">Target Balance</th>
+            <th scope="col">Monthly Interest</th>
+            <th scope="col">Target Balance Achieved?</th>
+            <th scope="col" th:if="${role == 'admin'}">User ID</th>
+            <th scope="col" th:if="${role == 'admin'}">User Name</th>
+            <th scope="col">Operations</th>
         </tr>
         </thead>
         <tbody>
@@ -36,19 +37,20 @@
             <td th:text="${account.goalReached}">Target Balance Reached?</td>
             <td th:if="${role == 'admin'}" th:text="${account.getUserId()}">User ID</td>
             <td th:if="${role == 'admin'}" th:text="${account.getUser()}">User Name</td>
-            <td><a th:href="@{'/edit-account/' + ${account.id}}">Edit</a>
-                <a th:href="@{'/delete-account/' + ${account.id}}">Delete</a>
-                <a th:href="@{'/transfer-money/' + ${account.id}}">Transfer money</a>
-                <a th:href="@{'/incomes-by-account/' + ${account.id}}">Incomes</a>
-                <a th:href="@{'/expenses-by-account/' + ${account.id}}">Expenses</a>
-                <a th:href="@{'/debts-by-account/' + ${account.id}}">Debts</a></td>
-                <a th:href="@{'/Account-Stats/' + ${account.id}}">Account Statistics</a></td>
-            <a th:href="@{'/accountPayments/' + ${account.id}}">Payment Reciepts</a></td>
+            <td><a class="btn btn-outline-danger" th:href="@{'/edit-account/' + ${account.id}}">Edit</a>
+                <a class="btn btn-outline-warning" th:href="@{'/delete-account/' + ${account.id}}">Delete</a>
+                <a class="btn btn-outline-success" th:href="@{'/transfer-money/' + ${account.id}}">Transfer money</a>
+                <a class="btn btn-outline-primary" th:href="@{'/incomes-by-account/' + ${account.id}}">Incomes</a>
+                <a class="btn btn-outline-success" th:href="@{'/expenses-by-account/' + ${account.id}}">Expenses</a>
+                <a class="btn btn-outline-secondary" th:href="@{'/debts-by-account/' + ${account.id}}">Debts</a>
+                <a class="btn btn-outline-info" th:href="@{'/Account-Stats/' + ${account.id}}">Account Statistics</a>
+            <a class="btn btn-outline-dark"th:href="@{'/accountPayments/' + ${account.id}}">Payment Receipts</a>
+            </td>
         </tr>
         </tbody>
     </table>
 </div>
-<a th:href="@{/new-account}">Add New Account</a>
-<a th:href= "@{/index}" >Home</a>
+<a class="btn btn-outline-primary" th:href="@{/new-account}">Add New Account</a>
+<a class="btn btn-outline-success" th:href= "@{/index}" >Home</a>
 </body>
 </html>

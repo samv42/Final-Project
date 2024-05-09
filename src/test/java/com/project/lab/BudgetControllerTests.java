@@ -4,19 +4,14 @@ import com.project.lab.controllers.BudgetController;
 import com.project.lab.models.*;
 import com.project.lab.services.*;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.data.domain.*;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.RequestBuilder;
 
-import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -24,7 +19,9 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -55,6 +52,62 @@ public class BudgetControllerTests {
 
     @Autowired
     MockMvc mockMvc;
+
+    CustomUserDetails user = CustomUserDetails.builder()
+            .id(1l)
+            .username("user")
+            .authorities(Collections.singletonList(Role.builder()
+                            .role(Role.Roles.ROLE_USER)
+                    .build()))
+            .build();
+
+    CustomUserDetails admin = CustomUserDetails.builder()
+            .id(2l)
+            .username("admin")
+            .authorities(Collections.singletonList(Role.builder()
+                    .role(Role.Roles.ROLE_ADMIN)
+                    .build()))
+            .build();
+
+    private Account testAccount = Account.builder()
+            .id(1l)
+            .name("main")
+            .type("Savings")
+            .balance(0)
+            .interest(0)
+            .goalReached(true)
+            .user(user)
+            .targetBalance(400).build();
+
+    private Income testIncome = Income.builder()
+            .name("main")
+                .id(1l)
+                .date("02-02-2020")
+                .amount(4000)
+                .recurring(true)
+                .account(testAccount)
+                .user(user)
+                .build();
+    private Expense testExpense = Expense.builder()
+            .id(1l)
+            .name("main")
+            .amount(3000)
+            .recurring(true)
+            .account(testAccount)
+            .user(user)
+            .build();
+
+    private Debt testDebt = Debt.builder()
+            .id(1l)
+            .creditor("Bank of America")
+            .amount(500)
+            .type("Credit Card")
+            .interest(.1)
+            .date("02-02-2020")
+            .payment(50)
+            .account(testAccount)
+            .user(user)
+            .build();
 
     @Test
     public void testIndexGoalReached() throws Exception {
@@ -107,6 +160,15 @@ public class BudgetControllerTests {
     }
 
     @Test
+    public void testNewIncomeFail() throws Exception {
+        when(accountService.getAllAccounts()).thenReturn(new ArrayList<>());
+        mockMvc.perform(get("/new-income").with(user(user)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("text/html;charset=UTF-8"))
+                .andExpect(model().attributeExists("message"));
+    }
+
+    @Test
     public void testEditIncomeByIdNormal() throws Exception {
         CustomUserDetails user1 = CustomUserDetails.builder()
                 .id((long)1)
@@ -135,7 +197,24 @@ public class BudgetControllerTests {
 
     @Test
     public void testSaveIncome() throws Exception {
+        CustomUserDetails user1 = CustomUserDetails.builder()
+                .id((long)1)
+                .username("user")
+                .build();
+        when(accountService.getAccount(anyLong())).thenReturn(testAccount);
+        mockMvc.perform(post("/save-income/").with(user(user1)).with(csrf()).content("id=1"))
+                .andExpect(status().isOk());
+    }
 
+    @Test
+    public void testUpdateIncomeFailure() throws  Exception {
+        CustomUserDetails user1 = CustomUserDetails.builder()
+                .id((long)1)
+                .username("user")
+                .build();
+        mockMvc.perform(post("/update-income/4").with(user(user1)).with(csrf()).param("id", "1"))
+                .andExpect(model().attribute("message", "Cannot update, income id " + testIncome.getId()
+                        + " doesn't match id to be updated: " + 4l + "."));
     }
 
     @Test
@@ -236,6 +315,14 @@ public class BudgetControllerTests {
         mockMvc.perform(get("/delete-expense/1").with(user(user1)))
                 .andExpect(status().is3xxRedirection());
     }
+
+    @Test
+    public void testUpdateExpenseFailure() throws Exception {
+        mockMvc.perform(post("/update-expense/" + 4).with(user(user)).with(csrf()).param("id", "1"))
+                .andExpect(model().attribute("message", "Cannot update, expense id " + testExpense.getId()
+                        + " doesn't match id to be updated: " + 4l + "."));
+    }
+
     @Test
     public void testGetExpenseByAccount() throws Exception {
         CustomUserDetails user1 = new CustomUserDetails();
@@ -280,6 +367,25 @@ public class BudgetControllerTests {
 
     }
     @Test
+    public void testNewDebtPage() throws Exception {
+        when(accountService.getAllAccounts()).thenReturn(Collections.singletonList(testAccount));
+        mockMvc.perform(get("/new-debt").with(user(user)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testEditDebtPage() throws Exception {
+        when(debtService.getDebt(anyLong())).thenReturn(testDebt);
+        mockMvc.perform(get("/edit-debt/" + 1).with(user(user)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testUpdateDebtFailure() throws Exception {
+        mockMvc.perform(post("/update-debt/" + 4).with(user(user)).with(csrf()).param("id","1"))
+                .andExpect(model().attribute("message", "Cannot find debt with id " + 4));
+    }
+    @Test
     public void testAccountPageNormal() throws Exception {
         CustomUserDetails user1 = new CustomUserDetails();
         user1.setUsername("user");
@@ -298,6 +404,21 @@ public class BudgetControllerTests {
     }
 
     @Test
+    public void testDeleteDebtPage() throws Exception {
+        when(debtService.getDebt(anyLong())).thenReturn(testDebt);
+        mockMvc.perform(get("/delete-debt/1").with(user(user)))
+                .andExpect(status().is3xxRedirection());
+    }
+
+    @Test
+    public void testNewAccountNormal() throws Exception {
+        mockMvc .perform(get("/new-account").with(user(user)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("text/html;charset=UTF-8"))
+                .andExpect(model().attributeExists("account"));
+    }
+
+    @Test
     public void showAccountStatisticsPagePositive() throws Exception{
         when(budgetService.getTotalAccountIncome(anyLong())).thenReturn(100d);
         when(budgetService.getTotalAccountCosts(anyLong())).thenReturn(50d);
@@ -307,6 +428,23 @@ public class BudgetControllerTests {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("text/html;charset=UTF-8"))
                 .andExpect(model().attributeExists("accountStat"));
+    }
+
+    @Test
+    public void testShowTransferMoneyPage() throws Exception {
+        mockMvc.perform(get("/transfer-money/" + 1))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testCompleteTransferFailure() throws Exception {
+        InternalTransfer internalTransfer = InternalTransfer.builder()
+                .transferringAccount(1l)
+                .targetAccount(2l)
+                .money(200d)
+                .build();
+        mockMvc.perform(post("/complete-transfer/" + 3).with(user(user)).with(csrf()).content("transferringAccount=1"))
+                .andExpect(model().attributeExists("message"));
     }
 
     @Test

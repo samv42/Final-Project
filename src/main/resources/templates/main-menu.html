@@ -26,8 +26,7 @@
                 <a button type="button" class="btn btn-outline-primary" href="#" th:href="@{/logout}">Logout</a>
         </div></div>
 
-<!-- th:if="${goalReached}" -->
-<div class="toast-container top-0 end-0">
+<div th:if="${goalReached}" class="toast-container top-0 end-0">
 <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
     <div class="toast-header">
 <!--        <img src="..." class="rounded me-2" alt="...">-->
@@ -37,7 +36,7 @@
     </div>
     <div class="toast-body">
         Congradulations! Your account(s) reached their target balance!
-        <a button type="button" class="btn btn-outline-primary" th:href="@{/goal-reached}">See Accounts</a>
+        <a button type="button" class="btn btn-outline-primary" th:href="@{/goal-reached(id=${accountList})}">See Accounts</a>
     </div>
 </div>
 </div>

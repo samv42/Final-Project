@@ -298,6 +298,12 @@ public class BudgetService {
                 .build();
         paymentService.savePayment(payment);
     }
+
+    /**
+     * Checks Goal
+     * @param account adsf
+     * @return boolean
+     */
     public boolean checkGoal(Account account)   {
         if(account.isGoalReached()){
             return false;

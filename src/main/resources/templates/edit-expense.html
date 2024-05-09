@@ -1,45 +1,57 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
 <head>
     <meta charset="UTF-8">
     <title>Edit Expense</title>
 </head>
 <body>
-<br />
-<form action="#" th:action="@{'/update-expense/' + ${expense.id}}" th:object="${expense}"
-      method="post">
-    <table border="0" cellpadding="10">
-        <tr>
-            <td>Expense Name:</td>
-            <td><input type="text" th:field="*{name}" required/></td>
-        </tr>
-        <tr>
-            <td>Expense Type:</td>
-            <td><input type="text" th:field="*{type}" required/></td>
-        </tr>
-
-        <tr>
-        <td>Date:</td>
-        <td><input type="date" th:field="*{date}" required/></td>
-        </tr>
-        <tr>
-            <td>Recur Monthly:</td>
-            <td><input type="boolean" th:field="*{recurring}" required/></td>
-        </tr>
-        <tr>
-            <td>Amount:</td>
-            <td><textarea type="number" th:field="*{amount}" required></textarea></td>
-        </tr>
-        <tr>
-            <td>ID of Account to be charged:</td>
-            <td><textarea type="number" th:field="*{account}" required></textarea></td>
-        </tr>
-        <tr>
-            <td colspan="2"><button type="submit">Save</button></td>
-        </tr>
-    </table>
-</form>
+<div align="center">
+    <div class="container-sm">
+        <h1>Edit Expense</h1>
+        <br/>
+        <form action="#" th:action="@{'/update-expense/' + ${expense.id}}" th:object="${expense}" method="post">
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="inputGroup-name">Name</span>
+                <input type="text" class="form-control" aria-label="Add Expense's Name"
+                       aria-describedby="inputGroup-name" field="*{name}" name="name" required>
+            </div>
+            <div class="row g-3">
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="inputGroup-date">Date</span>
+                        <input type="date" class="form-control" aria-label="Add Date"
+                               aria-describedby="inputGroup-date" field="*{date}" name="date" required>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked"
+                               field="*{recurring}" name="recurring" checked>
+                        <label class="form-check-label" for="flexSwitchCheckChecked">Is it recurring</label>
+                    </div>
+                </div>
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="inputGroup-amount">Amount</span>
+                <input type="number" class="form-control" aria-label="Add Amount"
+                       aria-describedby="inputGroup-amount" field="*{amount}" name="amount" required>
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="inputGroup-account">Account Id</span>
+                <input type="number" class="form-control" aria-label="Which Account?"
+                       aria-describedby="inputGroup-amount" field="*{account}" name="account" required>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-outline-primary">Submit Expense</button>
+            </div>
+        </form>
+    </div>
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+</div>
 </body>
 </html>

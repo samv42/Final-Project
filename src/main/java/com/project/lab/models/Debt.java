@@ -32,6 +32,7 @@ public class Debt {
     @ManyToOne(optional = false)
     @JoinColumn
     @JsonIgnore
+    @ToString.Exclude
     private CustomUserDetails user;
 
     public String getUser() {

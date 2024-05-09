@@ -8,12 +8,12 @@
 <div align="center">
     <h1>Transfer money</h1>
     <br />
-    <form action="#" th:action="@{'/complete-transfer/' + ${internalTransfer.transferringAccount}}" th:object="${internalTransfer}" method="post">
-    <table border="0" cellpadding="10">
-        <tr>
-            <td>Money to transfer:</td>
-            <td><input type="number" th:field="*{money}" required/></td>
-        </tr>
+    <form action="#" th:action="@{'/complete-transfer/' + ${accountId}}" th:object="${internalTransfer}" method="post">
+        <table border="0" cellpadding="10">
+            <tr>
+                <td>Money to transfer:</td>
+                <td><input type="number" th:field="*{money}" required/></td>
+            </tr>
         <tr>
             <td>Target Account ID:</td>
             <td><input type="number" th:field="*{targetAccount}" required/></td>
