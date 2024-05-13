@@ -39,7 +39,7 @@ public class Account implements Serializable {
         this.user = user;
         goalReached = false;
     }
-    public String getUser() {
+    public String getUsername() {
         return user.getUsername();
     }
     public long getUserId() { return user.getId();}

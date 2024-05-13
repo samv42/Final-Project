@@ -362,14 +362,17 @@ public class BudgetController {
     }
 
     @PostMapping("/update-account/{id}")
-    public String updateAccount(@PathVariable(name = "id") long id, Model model) {
-        Account account = accountService.getAccount(id);
+    public String updateAccount(@PathVariable(name = "id") long id, @ModelAttribute("account") Account account, Model model) {
+        Account checkAccount = accountService.getAccount(id);
         if (account == null) {
             log.error("Cannot find account with id " + id);
             String errorMessage = ("Cannot find account with id " + id);
             model.addAttribute("message", errorMessage);
             return "error-page";
         }
+
+        //ensure goal reached is reset when account is edited
+        account.setGoalReached(false);
         accountService.saveAccount(account);
         return "redirect:/";
     }
