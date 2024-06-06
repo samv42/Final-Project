@@ -12,17 +12,13 @@ import java.util.List;
 @NoArgsConstructor
 public class Article {
     private Long id;
-    //private String headline;
+    private Headline headline;
     @JsonProperty("web_url")
     private String webUrl;
     private String url;
-    //@JsonProperty("lead_paragraph")
-    //private String leadParagraph;
     private String snippet;
     @JsonProperty("news_desk")
     private String newsDesk;
-    //@JsonProperty("pub_date")
-    //private String date;
     @JsonProperty("abstract")
     private String summary;
 

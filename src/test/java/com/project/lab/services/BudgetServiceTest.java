@@ -58,29 +58,40 @@ class BudgetServiceTest {
             .username("user")
             .build();
 
-    private Account testAccount = Account.builder()
+    private Account account = Account.builder()
             .name("main")
             .type("Savings")
-            .balance(0)
+            .balance(200)
             .interest(0)
             .goalReached(true)
             .user(user)
             .targetBalance(400).build();
-    private Income testIncome = Income.builder()
+    private Income income = Income.builder()
             .name("income")
             .amount(200)
             .recurring(true)
             .date("2022-01-01")
-            .account(testAccount)
+            .account(account)
             .paymentDate("2022-01-01")
-            .paymentReceived(true)
+            .paymentReceived(false)
             .build();
     private Expense expense = Expense.builder()
             .name("expense")
             .amount(200)
             .recurring(true)
-            .date("2022-12-31")
-            .account(testAccount)
+            .date("2022-12-01")
+            .paymentDate("2022-01-01")
+            .paymentReceived(false)
+            .account(account)
+            .build();
+    private Debt debt = Debt.builder()
+            .creditor("Chase")
+            .amount(200)
+            .interest(.02)
+            .date("2022-12-01")
+            .paymentDate("2022-01-01")
+            .paymentReceived(false)
+            .account(account)
             .build();
 
     @BeforeEach
@@ -95,36 +106,21 @@ class BudgetServiceTest {
 
     @Test
     void addRecurringIncome() {
-        Account account = Account.builder()
-                .name("main")
-                .type("Savings")
-                .balance(0)
-                .interest(0)
-                .goalReached(true)
-                .user(user)
-                .targetBalance(400).build();
-        Income income = Income.builder()
-                .name("income")
-                .amount(200)
-                .recurring(true)
-                .date("2022-01-01")
-                .account(account)
-                .build();
         when(SecurityContextHolder.getContext().getAuthentication().getPrincipal()).thenReturn(user);
         when(userDetailsService.loadUserByUsername(any())).thenReturn(user);
         when(accountService.getAccount(any())).thenReturn(account);
         budgetService.addRecurringIncome(income);
         verify(accountService).saveAccount(argumentCaptor.capture());
         verify(accountService, times(1)).saveAccount(account);
-        assertEquals(200, argumentCaptor.getValue().getBalance());
+        assertEquals(400, argumentCaptor.getValue().getBalance());
 
     }
 
     @Test
     void addIncome() {
-        when(accountService.getAccount(any())).thenReturn(testAccount);
-        budgetService.addIncome(testIncome);
-        assertEquals(200d, accountService.getAccount(testAccount.getId()).getBalance());
+        when(accountService.getAccount(any())).thenReturn(account);
+        budgetService.addIncome(income);
+        assertEquals(400d, accountService.getAccount(account.getId()).getBalance());
     }
 
     @Test
@@ -152,9 +148,40 @@ class BudgetServiceTest {
     }
 
     @Test
-    void subtractRecurringExpense() {
-        budgetService.subtractRecurringExpense(expense);
+    void checkExpenseListPayments() {
+        when(expenseService.getAllExpenses()).thenReturn(Arrays.asList(expense));
+        when(accountService.getAccount(any())).thenReturn(account);
+        budgetService.checkExpenseListPayments();
     }
+
+    @Test
+    void subtractRecurringExpense() {
+        when(SecurityContextHolder.getContext().getAuthentication().getPrincipal()).thenReturn(user);
+        when(userDetailsService.loadUserByUsername(any())).thenReturn(user);
+        when(accountService.getAccount(any())).thenReturn(account);
+        budgetService.subtractRecurringExpense(expense);
+        verify(accountService).saveAccount(argumentCaptor.capture());
+        verify(accountService, times(1)).saveAccount(account);
+        assertEquals(0, argumentCaptor.getValue().getBalance());
+    }
+
+    @Test
+    void subtractExpense() {
+        when(accountService.getAccount(any())).thenReturn(account);
+        budgetService.subtractExpense(expense);
+        assertEquals(0d, accountService.getAccount(account.getId()).getBalance());
+    }
+    @Test
+    void subtractDebtPayment() {
+        budgetService.subtractDebtPayment(debt);}
+
+    @Test
+    void checkDebtListPayments() {
+        when(debtService.getAllDebts()).thenReturn(Arrays.asList(debt));
+        when(accountService.getAccount(any())).thenReturn(account);
+        budgetService.checkDebtListPayments();
+    }
+
     @Test
     void getTotalAccountIncome() {
         when(incomeService.getIncomesByAccount(any())).thenReturn(new ArrayList<>());
@@ -170,9 +197,29 @@ class BudgetServiceTest {
     }
 
     @Test
+    void expensePaymentReceived() {
+        budgetService.expensePaymentReceived(expense);
+    }
+
+    @Test
     void isNextIncomeMonth() {
-        budgetService.isNextIncomeMonth(testIncome);
-        assertEquals(false, testIncome.isPaymentReceived());
+        income.setPaymentReceived(true);
+        budgetService.isNextIncomeMonth(income);
+        assertEquals(false, income.isPaymentReceived());
+    }
+
+    @Test
+    void isNextExpenseMonth() {
+        expense.setPaymentReceived(true);
+        budgetService.isNextExpenseMonth(expense);
+        assertEquals(false, expense.isPaymentReceived());
+    }
+
+    @Test
+    void isNextDebtMonth() {
+        debt.setPaymentReceived(true);
+        budgetService.isNextDebtMonth(debt);
+        assertEquals(false, debt.isPaymentReceived());
     }
 
     @Test
@@ -199,12 +246,12 @@ class BudgetServiceTest {
                 .targetBalance(400).build();
         InternalTransfer internalTransfer = InternalTransfer.builder()
                 .money(200)
-                .targetAccount(testAccount.getId())
+                .targetAccount(account.getId())
                 .transferringAccount(account2.getId())
                 .build();
-        when(accountService.getAccount(any())).thenReturn(account2).thenReturn(testAccount);
+        when(accountService.getAccount(any())).thenReturn(account2).thenReturn(account2);
         budgetService.transferMoney(internalTransfer);
-        Double actual = testAccount.getBalance();
+        Double actual = account.getBalance();
         assertEquals(200d, actual);
     }
     @Test

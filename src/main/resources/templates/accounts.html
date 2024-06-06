@@ -36,7 +36,7 @@
             <td th:text="${account.interest}">Interest</td>
             <td th:text="${account.goalReached}">Target Balance Reached?</td>
             <td th:if="${role == 'admin'}" th:text="${account.getUserId()}">User ID</td>
-            <td th:if="${role == 'admin'}" th:text="${account.getUser()}">User Name</td>
+            <td th:if="${role == 'admin'}" th:text="${account.getUser().getUsername}">User Name</td>
             <td><a class="btn btn-outline-danger" th:href="@{'/edit-account/' + ${account.id}}">Edit</a>
                 <a class="btn btn-outline-warning" th:href="@{'/delete-account/' + ${account.id}}">Delete</a>
                 <a class="btn btn-outline-success" th:href="@{'/transfer-money/' + ${account.id}}">Transfer money</a>

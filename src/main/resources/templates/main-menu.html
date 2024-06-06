@@ -29,8 +29,7 @@
 <div th:if="${goalReached}" class="toast-container top-0 end-0">
 <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
     <div class="toast-header">
-<!--        <img src="..." class="rounded me-2" alt="...">-->
-        <strong class="me-auto">Bootstrap</strong>
+        <strong class="me-auto">Goal Achieved</strong>
         <small class="text-body-secondary">1 mins ago</small>
         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
     </div>
@@ -41,17 +40,20 @@
 </div>
 </div>
 
-<!--<div class="toast fade show" role="alert" aria-live="assertive" aria-atomic="true">-->
-<!--    <div class="toast-header">-->
-<!--        <svg class="bd-placeholder-img rounded me-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#007aff"></rect></svg>-->
-<!--        <strong class="me-auto">Bootstrap</strong>-->
-<!--        <small class="text-body-secondary">11 mins ago</small>-->
-<!--        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close" fdprocessedid="2o292"></button>-->
-<!--    </div>-->
-<!--    <div class="toast-body">-->
-<!--        Hello, world! This is a toast message.-->
-<!--    </div>-->
-<!--</div>-->
+<div th:if="${noAccounts}" class="toast-container top-0 end-0">
+    <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <strong class="me-auto">Reminder</strong>
+            <small class="text-body-secondary">1 mins ago</small>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            You have no currently have no accounts. Please create one before continuing.
+<!--            <a button type="button" class="btn btn-outline-warning" th:href="@{/new-account}">Create Account</a>-->
+        </div>
+    </div>
+</div>
+
 <div class="d-flex justify-content-center">
     <h1 class="time"></h1></div>
 <div class="d-flex justify-content-center">

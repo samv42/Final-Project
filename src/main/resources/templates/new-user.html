@@ -1,25 +1,30 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
 <head>
     <meta charset="UTF-8">
     <title>New User</title>
 </head>
 <body>
 <h1>Create New User</h1>
-<br />
-<form action="#" th:action="@{/save-user}" th:object="${user}" method="post">
-    <table border="0" cellpadding="10">
-        <tr>
-            <td>User Name:</td>
-            <td><input type="text" th:field="*{username}" required/></td>
-        </tr>
-        <tr>
-            <td>Password:</td>
-            <td><input type="text" th:field="*{password}" required/></td>
-        </tr>
-    </table>
-    <td colspan="2"><button type="submit">Save</button> </td>
-</form>
+<div align="center">
+    <br />
+    <form action="#" th:action="@{/save-user}" th:object="${user}" method="post">
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="inputGroup-username">Username</span>
+            <input type="text" class="form-control" aria-label="username"
+                   aria-describedby="inputGroup-username" field="*{username}" name="username" required>
+        </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="inputGroup-targetAccount">Password</span>
+            <input type="text" class="form-control" aria-label="password"
+                   aria-describedby="inputGroup-password" field="*{password}" name="password" required>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-outline-primary">Save</button>
+        </div>
 </div>
+</form>
 </body>
 </html>

@@ -15,14 +15,14 @@
             <div class="input-group mb-3">
                 <span class="input-group-text" id="inputGroup-name">Name</span>
                 <input type="text" class="form-control" aria-label="Add Income's Name"
-                       aria-describedby="inputGroup-name" field="*{name}" name="name" required>
+                       aria-describedby="inputGroup-name" th:field="*{name}" name="name" required>
             </div>
             <div class="row g-3">
                 <div class="col">
                     <div class="input-group mb-3">
                         <span class="input-group-text" id="inputGroup-date">Date</span>
                         <input type="date" class="form-control" aria-label="Add Date"
-                               aria-describedby="inputGroup-date" field="*{date}" name="date" required>
+                               aria-describedby="inputGroup-date" th:field="*{date}" name="date" required>
                     </div>
                 </div>
                 <div class="col">
@@ -36,12 +36,12 @@
             <div class="input-group mb-3">
                 <span class="input-group-text" id="inputGroup-amount">Amount</span>
                 <input type="number" class="form-control" aria-label="Add Amount"
-                       aria-describedby="inputGroup-amount" field="*{amount}" name="amount" required>
+                       aria-describedby="inputGroup-amount" th:field="*{amount}" name="amount" required>
             </div>
             <div class="input-group mb-3">
                 <span class="input-group-text" id="inputGroup-account">Account Id</span>
                 <input type="number" class="form-control" aria-label="Which Account?"
-                       aria-describedby="inputGroup-amount" field="*{account}" name="account" required>
+                       aria-describedby="inputGroup-amount" th:field="*{account}" name="account" required>
             </div>
             <div class="col-auto">
                 <button type="submit" class="btn btn-outline-primary">Submit Income</button>

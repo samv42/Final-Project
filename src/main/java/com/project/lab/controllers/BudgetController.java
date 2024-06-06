@@ -56,10 +56,9 @@ public class BudgetController {
             model.addAttribute("accountList", Strings.join(goalsReached.stream().map(a -> a.getId()).collect(Collectors.toList()),
                     '|'));
         }
-        /*if(!goalsReached.isEmpty())    {
-            model.addAttribute("accountList", goalsReached);
-            return "goals-reached";
-        }*/
+        if(accountService.getAccountsByUser(user).isEmpty()) {
+            model.addAttribute("noAccounts", true);
+        }
         return "main-menu";
     }
 
@@ -202,7 +201,25 @@ public class BudgetController {
         }
     }
     @PostMapping(value = "/save-expense")
-    public String saveExpense(@ModelAttribute("expense") Expense expense) {
+    public String saveExpense(@ModelAttribute("expense") Expense expense, Model model) {
+        CustomUserDetails user = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(expense != null && expense.getAccount() != null && accountService.getAccount(expense.getAccount().getId()) != null) {
+            if (user.getId() == accountService.getAccount(expense.getAccount().getId()).getUserId()) {
+
+                if (!expense.isRecurring()) {
+                    budgetService.subtractExpense(expense);
+                }
+                expenseService.saveExpense(expense);
+            } else {
+                log.error("Account not found.");
+                model.addAttribute("message", "Account not found.");
+                return "error-page";
+            }
+        }else{
+            log.error("Account not found.");
+            model.addAttribute("message", "Account not found.");
+            return "error-page";
+        }
         expenseService.saveExpense(expense);
         return "redirect:/";
     }

@@ -14,27 +14,27 @@
             <div class="input-group mb-3">
                 <span class="input-group-text" id="inputGroup-name">Name</span>
                 <input type="text" class="form-control" aria-label="Add Account's Name"
-                       aria-describedby="inputGroup-name" field="*{name}" name="name" required>
+                       aria-describedby="inputGroup-name" th:field="*{name}" name="name" required>
             </div>
             <div class="input-group mb-3">
                 <span class="input-group-text" id="inputGroup-type">Type</span>
                 <input type="text" class="form-control" aria-label="Account Type"
-                       aria-describedby="inputGroup-name" field="*{type}" name="type" required>
+                       aria-describedby="inputGroup-name" th:field="*{type}" name="type" required>
             </div>
             <div class="input-group mb-3">
                 <span class="input-group-text" id="inputGroup-amount">Balance</span>
                 <input type="number" class="form-control" aria-label="Add Balance"
-                       aria-describedby="inputGroup-amount" field="*{balance}" name="balance" required>
+                       aria-describedby="inputGroup-amount" th:field="*{balance}" name="balance" required>
             </div>
             <div class="input-group mb-3">
                 <span class="input-group-text" id="inputGroup-targetBalance">Target Balance</span>
                 <input type="number" class="form-control" aria-label="Add Target Balance"
-                       aria-describedby="inputGroup-amount" field="*{targetBalance}" name="targetBalance" required>
+                       aria-describedby="inputGroup-amount" th:field="*{targetBalance}" name="targetBalance" required>
             </div>
             <div class="input-group mb-3">
                 <span class="input-group-text" id="inputGroup-interest">Interest</span>
                 <input type="number" class="form-control" step=".01" aria-label="Interest (Enter as decimal):"
-                       aria-describedby="inputGroup-interest" field="*{interest}" name="interest" required>
+                       aria-describedby="inputGroup-interest" th:field="*{interest}" name="interest" required>
             </div>
             <div class="col-auto">
                 <button type="submit" class="btn btn-outline-primary">Submit Account</button>

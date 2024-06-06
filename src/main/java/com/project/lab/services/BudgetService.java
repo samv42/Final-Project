@@ -81,6 +81,13 @@ public class BudgetService {
             }
     }
 
+    public void subtractExpense(Expense expense) {
+        Account account = accountService.getAccount(expense.getAccount().getId());
+        account.setBalance(account.getBalance() - expense.getAmount());
+        accountService.saveAccount(account);
+        expensePaymentReceived(expense);
+    }
+
     public void checkExpenseListPayments(){
         List<Expense> expensesList = expenseService.getAllExpenses();
         for(Expense expense : expensesList){
@@ -130,8 +137,8 @@ public class BudgetService {
         if (income.isPaymentReceived() == true) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             LocalDate now = LocalDate.now();
-            LocalDate debtDate = LocalDate.parse(income.getPaymentDate(), formatter);
-            int month = debtDate.getMonthValue();
+            LocalDate incomeDate = LocalDate.parse(income.getPaymentDate(), formatter);
+            int month = incomeDate.getMonthValue();
             int nowMonth = now.getMonthValue();
 
             if (nowMonth > month) {
@@ -153,8 +160,8 @@ public class BudgetService {
         if (expense.isPaymentReceived() == true) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             LocalDate now = LocalDate.now();
-            LocalDate debtDate = LocalDate.parse(expense.getPaymentDate(), formatter);
-            int month = debtDate.getMonthValue();
+            LocalDate expenseDate = LocalDate.parse(expense.getPaymentDate(), formatter);
+            int month = expenseDate.getMonthValue();
             int nowMonth = now.getMonthValue();
 
             if (nowMonth > month) {

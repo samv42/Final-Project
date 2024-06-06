@@ -15,18 +15,18 @@
             <div class="input-group mb-3">
                 <span class="input-group-text" id="inputGroup-creditor">Creditor:</span>
                 <input type="text" class="form-control" aria-label="Add Creditor"
-                       aria-describedby="inputGroup-creditor" field="*{creditor}" name="creditor" required>
+                       aria-describedby="inputGroup-creditor" th:field="*{creditor}" name="creditor" required>
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="inputGroup-type">Type of Debt:</span>
                     <input type="text" class="form-control" aria-label="Add Type"
-                           aria-describedby="inputGroup-type" field="*{type}" name="type" required>
+                           aria-describedby="inputGroup-type" th:field="*{type}" name="type" required>
                 </div>
                 <div class="row g-3">
                     <div class="col">
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="inputGroup-date">Date</span>
                             <input type="date" class="form-control" aria-label="Add Date"
-                                   aria-describedby="inputGroup-date" field="*{date}" name="date" required>
+                                   aria-describedby="inputGroup-date" th:field="*{date}" name="date" required>
                         </div>
                     </div>
                 </div>
@@ -34,22 +34,22 @@
             <div class="input-group mb-3">
                 <span class="input-group-text" id="inputGroup-amount">Amount</span>
                 <input type="number" class="form-control" aria-label="Add Amount"
-                       aria-describedby="inputGroup-amount" field="*{amount}" name="amount" required>
+                       aria-describedby="inputGroup-amount" th:field="*{amount}" name="amount" required>
             </div>
             <div class="input-group mb-3">
                 <span class="input-group-text" id="inputGroup-payment">Payment</span>
                 <input type="number" class="form-control" aria-label="Add Payment"
-                       aria-describedby="inputGroup-payment" field="*{payment}" name="payment" required>
+                       aria-describedby="inputGroup-payment" th:field="*{payment}" name="payment" required>
             </div>
             <div class="input-group mb-3">
                 <span class="input-group-text" id="inputGroup-interest">Interest (as decimal)</span>
                 <input type="number" class="form-control" step=".01" aria-label="Add Interest"
-                       aria-describedby="inputGroup-interest" field="*{interest}" name="interest" required>
+                       aria-describedby="inputGroup-interest" th:field="*{interest}" name="interest" required>
             </div>
             <div class="input-group mb-3">
                 <span class="input-group-text" id="inputGroup-account">Account Id</span>
                 <input type="number" class="form-control" aria-label="Which Account?"
-                       aria-describedby="inputGroup-amount" field="*{account}" name="account" required>
+                       aria-describedby="inputGroup-amount" th:field="*{account}" name="account" required>
             </div>
             <div class="col-auto">
                 <button type="submit" class="btn btn-outline-primary">Submit Debt</button>

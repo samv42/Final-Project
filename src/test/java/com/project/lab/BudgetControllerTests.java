@@ -21,10 +21,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 @WebMvcTest(BudgetController.class)
 @WithMockUser(value = "user")
@@ -121,7 +120,7 @@ public class BudgetControllerTests {
         mockMvc.perform(get("/index").with(user(user1)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("text/html;charset=UTF-8"))
-                .andExpect(model().attribute("account-list", hasSize(1)));
+                .andExpect(model().attribute("accountList", "1"));
     }
 
     @Test
@@ -381,11 +380,6 @@ public class BudgetControllerTests {
     }
 
     @Test
-    public void testUpdateDebtFailure() throws Exception {
-        mockMvc.perform(post("/update-debt/" + 4).with(user(user)).with(csrf()).param("id","1"))
-                .andExpect(model().attribute("message", "Cannot find debt with id " + 4));
-    }
-    @Test
     public void testAccountPageNormal() throws Exception {
         CustomUserDetails user1 = new CustomUserDetails();
         user1.setUsername("user");
@@ -418,6 +412,35 @@ public class BudgetControllerTests {
                 .andExpect(model().attributeExists("account"));
     }
 
+    @Test
+    public void testEditAccountPageFailure() throws Exception {
+        when(accountService.getAccount(anyLong())).thenReturn(null);
+        mockMvc.perform(get("/edit-account/" + 1l).with(user(user)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("text/html;charset=UTF-8"))
+                .andExpect(model().attribute("message", "Cannot find account with id " + 1l));
+    }
+
+    @Test
+    public void testUpdateAccountPageFailure() throws Exception {
+        when(accountService.getAccount(anyLong())).thenReturn(null);
+        mockMvc.perform(post("/update-account/" + 1l).with(user(user)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("text/html;charset=UTF-8"))
+                .andExpect(model().attribute("message", "Cannot find account with id " + 1l));
+    }
+
+    @Test
+    public void testDeleteAccountPageFailure() throws Exception {
+        when(incomeService.getIncomesByAccount(any())).thenReturn(Arrays.asList(testIncome));
+        when(expenseService.getExpensesByAccount(any())).thenReturn(Arrays.asList(testExpense));
+        when(debtService.getDebtsByAccount(any())).thenReturn(Arrays.asList(testDebt));
+        mockMvc.perform(get("/delete-account/" + testDebt.getId()).with(user(user)))
+        .andExpect(status().isOk())
+                .andExpect(content().contentType("text/html;charset=UTF-8"))
+                .andExpect(model().attribute("message",
+                        "You must delete incomes, expenses, and debts associated with the account before deleting."));
+    }
     @Test
     public void showAccountStatisticsPagePositive() throws Exception{
         when(budgetService.getTotalAccountIncome(anyLong())).thenReturn(100d);
