@@ -12,29 +12,31 @@ repositories {
 	mavenCentral()
 }
 
-apply plugin: 'war'
-bootWar {
-	archiveName 'ROOT.war'
+//apply plugin: 'jar'
+//bootJar {
+//	archiveName 'ROOT.jar'
+//}
+
+jar {
+	manifest {
+		attributes 'BudgetingAppApplication': 'src.main.java.BudgetingAppApplication'
+	}
 }
 
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-    //implementation 'com.github.ydespreaux.spring.data:spring-data-jpa:0.0.3'
-	//implementation 'org.springframework.data:spring-data-jdbc:2.4.3'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	//implementation 'org.springframework.boot:spring-boot-configuration-processor:2.7.4'
 	compileOnly 'org.projectlombok:lombok:1.18.20'
 	annotationProcessor 'org.projectlombok:lombok:1.18.20'
 	implementation group: 'mysql', name: 'mysql-connector-java'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.security:spring-security-test'
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
-	//implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
-	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+//	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 
 }
 test {
